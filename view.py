@@ -1,7 +1,17 @@
+import sys
+import os
 import tkinter as tk
 from tkinter import filedialog, messagebox
 from PIL import Image, ImageTk
-import os
+
+
+def obtener_ruta_recurso(ruta_relativa):
+    """Obtiene la ruta absoluta del recurso, compatible en .py normal y .exe."""
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, ruta_relativa)
 
 class App:
     def __init__(self):
@@ -23,9 +33,10 @@ class App:
         self.root.resizable(False, False)
         self.root.config(bg="#121212")
 
-        # Icono
-        if os.path.exists("logo.png"):
-            img_icono = Image.open("logo.png")
+        # Cambiar ícono de ventana usando logo.png
+        ruta_icono = obtener_ruta_recurso("logo.png")
+        if os.path.exists(ruta_icono):
+            img_icono = Image.open(ruta_icono)
             img_icono = img_icono.resize((32, 32))
             self.icono = ImageTk.PhotoImage(img_icono)
             self.root.iconphoto(False, self.icono)
@@ -45,8 +56,10 @@ class App:
         font_general = ("Segoe UI", 11)
         font_titulo = ("Segoe UI", 18, "bold")
 
-        if os.path.exists("logo.png"):
-            img = Image.open("logo.png")
+        # Mostrar logo grande usando obtener_ruta_recurso
+        ruta_logo = obtener_ruta_recurso("logo.png")
+        if os.path.exists(ruta_logo):
+            img = Image.open(ruta_logo)
             img = img.resize((80, 80))
             self.imagen = ImageTk.PhotoImage(img)
             label_img = tk.Label(self.root, image=self.imagen, bg=bg_color)

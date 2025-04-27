@@ -1,9 +1,16 @@
 import os
 from openpyxl import load_workbook
 from fpdf import FPDF
-from docx2pdf import convert as docx_convert
+try:
+    from docx2pdf import convert as docx_convert
+except ImportError:
+    docx_convert = None  # Si no está instalado, manejamos mejor el error
 
 def convertir_word(ruta_archivo, carpeta_salida=None):
+    if docx_convert is None:
+        print("docx2pdf no está instalado o no disponible en este ejecutable.")
+        return False
+
     try:
         if carpeta_salida:
             nombre_archivo = os.path.basename(ruta_archivo)
@@ -15,7 +22,8 @@ def convertir_word(ruta_archivo, carpeta_salida=None):
             docx_convert(ruta_archivo)
         return True
     except Exception as e:
-        print(f"Error al convertir Word: {e}")
+        print("⚠️ Microsoft Word no encontrado o problema al convertir Word a PDF.")
+        print(f"Detalle del error: {e}")
         return False
 
 def convertir_excel(ruta_archivo, carpeta_salida=None):
@@ -41,11 +49,11 @@ def convertir_excel(ruta_archivo, carpeta_salida=None):
 
         for idx, row in enumerate(ws.iter_rows(values_only=True)):
             if idx == 0:
-                pdf.set_fill_color(200, 200, 200)  # Gris claro
+                pdf.set_fill_color(200, 200, 200)  # Encabezado gris
                 pdf.set_font("Arial", 'B', 11)
                 fill = True
             else:
-                pdf.set_fill_color(255, 255, 255)  # Blanco
+                pdf.set_fill_color(255, 255, 255)  # Blanco normal
                 pdf.set_font("Arial", '', 10)
                 fill = False
 
