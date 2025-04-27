@@ -1,0 +1,3 @@
+tk
+docx2pdf
+pywin32
